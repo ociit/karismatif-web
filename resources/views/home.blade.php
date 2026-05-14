@@ -58,8 +58,9 @@
         
     </header>
 
-    <section class="py-20 px-10">
-        <h2 class="text-3xl font-bold text-center mb-10">Misi Kami</h2>
+    <!-- <section class="py-20 px-10"> -->
+    <section class="p-0">
+        <!-- <h2 class="text-3xl font-bold text-center mb-10">Misi Kami</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             @if($currentCabinet)
                 @foreach($currentCabinet->missions as $misi)
@@ -69,7 +70,9 @@
                     </div>
                 @endforeach
             @endif
-        </div>
+        </div> -->
+        <!-- <h2 class="text-3xl font-bold text-center mb-10">Tentang Kami</h2> -->
+        <x-about-section />
     </section>
 
     <section class="bg-gray-100 py-20 px-10">
