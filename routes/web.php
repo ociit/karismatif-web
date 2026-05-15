@@ -4,6 +4,11 @@ use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+// === KODE BARU START: Import EventController ===
+use App\Http\Controllers\EventController;
+// === KODE BARU END ===
+
+// Route bawaan (Dibiarkan utuh)
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -21,3 +26,9 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// === KODE BARU START: Route untuk Input Event Admin ===
+// Route ini digunakan agar form input dan proses simpan JSON bisa berjalan
+Route::get('/admin/events/create', [EventController::class, 'create'])->name('events.create');
+Route::post('/admin/events', [EventController::class, 'store'])->name('events.store');
+// === KODE BARU END ===
