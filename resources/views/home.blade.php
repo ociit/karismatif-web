@@ -74,6 +74,10 @@
         <!-- <h2 class="text-3xl font-bold text-center mb-10">Tentang Kami</h2> -->
         <x-about-section />
     </section>
+    
+    <section>
+        <x-calender-section :events="$events" />
+    </section>
 
     <section class="bg-gray-100 py-20 px-10">
         <h2 class="text-3xl font-bold text-center mb-10">Berita Terbaru</h2>
