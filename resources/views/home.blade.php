@@ -6,6 +6,7 @@
     <title>Website Karismatif</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script>
     <style>
         html {
             scrollbar-gutter: stable;
@@ -21,6 +22,9 @@
         ::-webkit-scrollbar-thumb {
             background: #3b82f6;
             border-radius: 10px;
+        }
+        [x-cloak] { 
+            display: none !important; 
         }
     </style>
 </head>
@@ -43,43 +47,33 @@
 
     <header class="relative h-screen flex flex-col justify-center items-center text-white p-6 overflow-hidden">
         <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-[-2]">
-            <source src="{{ asset('assets/video/PPkarismatif_video.mp4') }}" type="video/mp4">
+            <source src="/assets/video/PPkarismatif_video.mp4" type="video/mp4">
                 Your browser does not support the video tag.
         </video>
 
         <div class="absolute inset-0 bg-black/40 z-[-1]"></div>
 
-        @if($currentCabinet)
+        {{-- ? untuk tulisan didepan videotron --}}
+        {{-- @if($currentCabinet)
             <h1 class="text-5xl font-bold mb-4 text-center" id="title">{{ $currentCabinet->nama_kabinet }}</h1>
             <p class="text-xl italic opacity-90 mx-5 text-center max-w-2xl" id="motto">"{{ $currentCabinet->visi }}"</p>
         @else
             <h1 class="text-4xl font-bold">Selamat Datang di Karismatif</h1>
-        @endif
+        @endif --}}
         
     </header>
 
-    <!-- <section class="py-20 px-10"> -->
+    {{--? about section --}}
     <section class="p-0">
-        <!-- <h2 class="text-3xl font-bold text-center mb-10">Misi Kami</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            @if($currentCabinet)
-                @foreach($currentCabinet->missions as $misi)
-                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
-                        <h3 class="font-bold text-lg mb-2">Misi Ke-{{ $misi->urutan }}</h3>
-                        <p>{{ $misi->nama_misi }}</p>
-                    </div>
-                @endforeach
-            @endif
-        </div> -->
-        <!-- <h2 class="text-3xl font-bold text-center mb-10">Tentang Kami</h2> -->
-        <x-about-section />
+        <x-about-section :currentCabinet="$currentCabinet"/>
     </section>
     
     <section>
-        <x-calender-section :events="$events" />
+        <x-event-agenda :events="$events" />
     </section>
 
-    <section class="bg-gray-100 py-20 px-10">
+    {{-- ? Section berita --}}
+    {{-- <section class="bg-gray-100 py-20 px-10">
         <h2 class="text-3xl font-bold text-center mb-10">Berita Terbaru</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach($news as $item)
@@ -93,7 +87,7 @@
                 </div>
             @endforeach
         </div>
-    </section>
+    </section> --}}
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

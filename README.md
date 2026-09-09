@@ -21,6 +21,33 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Menjalankan dengan Docker
+
+Pastikan Docker Desktop sudah aktif, lalu jalankan:
+
+```bash
+docker compose up --build -d
+docker compose exec app php artisan migrate --seed
+```
+
+Aplikasi tersedia di `http://localhost:8000` dan MySQL pada port `3307`.
+Konfigurasi aplikasi dibaca dari `.env`; pada container, `DB_HOST` otomatis diarahkan ke layanan `db`.
+Secara bawaan database container memakai `karismatif_db` dengan user `karismatif`.
+Sesuaikan dengan variabel `DOCKER_DB_DATABASE`, `DOCKER_DB_USERNAME`,
+`DOCKER_DB_PASSWORD`, atau `DOCKER_DB_ROOT_PASSWORD` bila diperlukan.
+Port aplikasi dan database hanya dapat diakses dari localhost secara bawaan.
+Untuk URL publik di belakang Cloudflare Tunnel, isi `PUBLIC_APP_URL=https://domain-anda`.
+
+Untuk menghentikan container, gunakan `docker compose down`. Data database tetap tersimpan dalam volume `mysql-data`.
+File upload publik (misalnya poster event) tersimpan dalam volume `app-public-storage`,
+sehingga tidak hilang saat image aplikasi dibuat ulang.
+
+### Akun admin awal
+
+Sebelum menjalankan seeder, isi `ADMIN_NAME`, `ADMIN_EMAIL`, dan `ADMIN_PASSWORD`
+di `.env`. Seeder akan membuat atau memperbarui user tersebut dengan role `admin`.
+User yang mendaftar dari `/register` selalu diberi role `staff`.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.

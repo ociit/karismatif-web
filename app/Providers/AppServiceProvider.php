@@ -20,8 +20,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Tambahkan baris ini agar semua link asset() otomatis jadi HTTPS
-        if (config('app.env') !== 'local' || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+        // Memaksa semua URL menggunakan HTTPS jika diakses lewat ngrok / production
+        if ($this->app->environment('local') && isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            URL::forceScheme('https');
+        }
+        
+        // ATAU jika ingin lebih simpel (selalu paksa HTTPS saat pakai ngrok):
+        if (str_contains(request()->url(), 'ngrok-free.app')) {
             URL::forceScheme('https');
         }
     }

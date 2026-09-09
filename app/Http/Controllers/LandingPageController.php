@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\honorable_mention;
+use App\Models\HonorableMention;
 use App\Models\KarismatifProfile;
-use App\Models\news;
+use App\Models\News;
+use App\Models\Event;
 use Illuminate\Http\Request;
-// === KODE BARU START: Import Facade Storage untuk membaca JSON ===
-use Illuminate\Support\Facades\Storage;
-// === KODE BARU END ===
 
 class LandingPageController extends Controller
 {
@@ -19,24 +17,17 @@ class LandingPageController extends Controller
             'missions',
             'responsiblePeople',
             'programKerja',
-            'contactPerson'
+            'contactPeople'
         ])->latest()->first();
 
         // ambil News yang sudah di publish
-        $news = news::where('isPublished', true)->latest()->take(6)->get();
+        $news = News::where('isPublished', true)->latest()->take(6)->get();
 
         // ambil honorable mentions
-        $mentions = honorable_mention::latest()->get();
-
-        // === KODE BARU START: Logika membaca events.json ===
-        $events = [];
+        $mentions = HonorableMention::latest()->get();
         
-        // Cek apakah file events.json ada di public/storage, lalu baca isinya
-        if (Storage::disk('public')->exists('events.json')) {
-            $jsonString = Storage::disk('public')->get('events.json');
-            $events = json_decode($jsonString, true) ?? [];
-        }
-        // === KODE BARU END ===
+        // ambil events
+        $events = Event::orderBy('event_date')->get();
 
         // kirim data ke view
         // === KODE BARU: Tambahkan 'events' ke dalam array compact() ===

@@ -14,8 +14,8 @@ class KarismatifProfile extends Model
         return $this->hasMany(Mission::class);
     }
 
-    //* relasi contact person -> profile
-    public function contactPerson()
+    //* relasi contact people -> profile
+    public function contactPeople()
     {
         return $this->hasMany(ContactPerson::class);
     }

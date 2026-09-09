@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Psy\TabCompletion\Matcher\FunctionsMatcher;
 
 class ResponsiblePeople extends Model
 {

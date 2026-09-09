@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Bidang;
-use App\Models\honorable_mention;
+use App\Models\HonorableMention;
 use App\Models\KarismatifProfile;
 use App\Models\Mission;
-use App\Models\news;
+use App\Models\News;
 use App\Models\ProgramKerja;
 use App\Models\ResponsiblePeople;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -113,7 +113,7 @@ class LandingPageSeeder001 extends Seeder
         ]);
 
         //? News
-        news::create([
+        News::create([
             'judul' => 'Peluncuran Website Karismatif 2026',
             'deskripsi' => 'Hari ini kabinet resmi meluncurkan portal berita dan sistem informasi organisasi.',
             'photo_thumbnail_path' => 'news/news-launching.png',
@@ -123,7 +123,7 @@ class LandingPageSeeder001 extends Seeder
         ]);
 
         //? honorable mentions
-        honorable_mention::create([
+        HonorableMention::create([
             'nama' => 'Budi Santoso',
             'mention' => 'Ketua Teraktif Bulan Januari',
             'story' => 'Budi berhasil memimpin 3 proker sekaligus dalam sebulan.',

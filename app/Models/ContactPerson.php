@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContactPerson extends Model
 {
+    //? table name
+    protected $table = 'contact_people';    //* sebenarnya tidak perlu karena larabel sudah punya template penamaan untuk singular dan plular
     protected $fillable = [
         'karismatif_profile_id',
         'nama',

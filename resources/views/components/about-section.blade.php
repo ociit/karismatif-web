@@ -1,3 +1,5 @@
+@props(['currentCabinet'])
+
 <section id="about" class="relative py-20 bg-none overflow-hidden">
 
     {{-- Aksen dekoratif sudut --}}
@@ -23,7 +25,7 @@
                     <div class="absolute -bottom-2 -right-2 w-6 h-6 rounded-full bg-[#F5C400] opacity-60 pointer-events-none"></div>
                     <div class="absolute -top-2 -left-2 w-3 h-3 rounded-full bg-[#0097A7] opacity-40 pointer-events-none"></div>
                     <div class="scroll-anim fade-in-up logo-box w-56 h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 bg-white flex items-center justify-center rounded-[2.5rem] shadow-md border border-gray-100">
-                        <img src="{{asset('assets/logo-dummy.png')}}" alt="Logo Karismatif" class="w-full h-full object-contain p-5" />
+                        <img src="/assets/logo-dummy.png" alt="Logo Karismatif" class="w-full h-full object-contain p-5" />
                     </div>
                 </div>
             </div>
@@ -35,7 +37,7 @@
                 <div class="space-y-4">
 
                     <h2 class="scroll-anim fade-in-left text-xl md:text-2xl font-black text-gray-900 tracking-tight">
-                        Visi Kami
+                        Visi {{ $currentCabinet?->nama_kabinet ?? 'Kabinet' }}
                     </h2>
 
                     <div class="scroll-anim fade-in-up anim-delay-200 visi-card rounded-2xl border border-white/30 relative overflow-hidden cursor-pointer"
@@ -43,214 +45,109 @@
                         <div class="absolute bottom-4 right-4 w-8 h-8 rounded-full bg-white opacity-10 pointer-events-none"></div>
                         <div class="absolute left-0 top-0 bottom-0 w-1 bg-white/40 rounded-l-2xl pointer-events-none"></div>
                         <p class="relative z-10 text-sm md:text-base font-medium leading-relaxed text-white pl-4 pr-6 py-6 md:py-8">
-                            [ Placeholder Teks Visi Karismatif ]<br><br>
-                            Menjadi Rumah Ideologis yang menyatukan alumni lintas generasi SMA IT Ihsanul Fikri dalam semangat nilai, kontribusi, dan kesinambungan perjuangan untuk menghadirkan dampak nyata bagi alumni, almamater, dan masyarakat.
+                            {{-- [ Placeholder Teks Visi Karismatif ]<br><br> --}}
+                            {{ $currentCabinet?->visi ?? 'Visi kabinet belum dikonfigurasi.' }}
                         </p>
                     </div>
                 </div>
 
                 {{-- Bagian Misi --}}
-                <div class="space-y-4">
+                <div class="w-full py-12">
+                    <div class="flex flex-col items-center mb-12">
+                        {{-- <span class="text-[#0097A7] font-bold tracking-widest uppercase text-sm mb-2">Pilar Organisasi</span> --}}
+                        <h2 class="text-3xl md:text-4xl font-black text-gray-900 tracking-tight text-center">
+                            Misi {{ $currentCabinet->nama_kabinet ?? 'Kabinet' }}
+                        </h2>
+                    </div>
 
-                    <h2 class="scroll-anim fade-in-left text-xl md:text-2xl font-black text-gray-900 tracking-tight">
-                        Misi Kami
-                    </h2>
+                    @if($currentCabinet && $currentCabinet->missions->count() > 0)
+                        <!-- Container: Stack di HP, Grid di Desktop -->
+                        <div class="flex flex-col md:grid md:grid-cols-3 md:auto-rows-[280px] gap-4 md:gap-6 max-w-6xl mx-auto px-4 md:px-0">
+                            
+                            @foreach($currentCabinet->missions->sortBy('urutan') as $mission)
+                                @php
+                                    $isWide = ($loop->index % 4 == 0 || $loop->index % 4 == 3); 
+                                    $colSpan = $isWide ? 'md:col-span-2' : 'md:col-span-1';
 
-                    {{-- ── MOBILE: Vertical Stack ── --}}
-                    <div class="flex flex-col gap-3 md:hidden">
+                                    if ($loop->last && $loop->count % 2 != 0) 
+                                    {
+                                        $colSpan = 'md:col-span-3';
+                                    }
+                                    
+                                    $gradients = [
+                                        'from-[#0097A7] to-[#00606B]',
+                                        'from-[#F5C400] to-[#B38F00]',
+                                        'from-gray-800 to-black',
+                                    ];
+                                    $bgClass = $gradients[$loop->index % 3];
+                                    $formattedNumber = sprintf('%02d', $mission->urutan ?? ($loop->index + 1));
+                                @endphp
 
-                        {{-- Mobile Card 1 --}}
-                        <div class="mobile-card scroll-anim fade-in-up anim-delay-100 rounded-xl border border-gray-100 cursor-pointer overflow-hidden w-full"
-                            style="background-image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'); background-size:cover; background-position:center;"
-                            onclick="toggleMobileCard(this)">
-                            <div class="card-overlay-blur w-full px-4 pt-3 pb-3">
-                                {{-- Header: selalu tampil --}}
-                                <div class="flex items-center justify-between min-h-[48px]">
-                                    <div class="flex items-center gap-3 flex-1 min-w-0">
-                                        <span class="text-[9px] font-bold text-white/50 tracking-widest flex-shrink-0">01</span>
-                                        <h3 class="text-xs font-bold text-white leading-snug">Merawat Silaturahmi dan Identitas Kolektif</h3>
+                                <!-- ── MOBILE VIEW (Langsung Tampil, Tanpa Hover) ── -->
+                                <div class="block md:hidden bg-gradient-to-br {{ $bgClass }} rounded-3xl p-6 shadow-lg relative overflow-hidden">
+                                    <!-- Ornamen -->
+                                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                                    
+                                    <!-- Konten Mobile -->
+                                    <div class="relative z-10 flex flex-col h-full">
+                                        <div class="flex items-start gap-4 mb-4">
+                                            <span class="text-white/40 font-black text-4xl">{{ $formattedNumber }}</span>
+                                            <h3 class="text-lg font-bold text-white leading-snug pt-1">
+                                                {{ $mission->nama_misi }}
+                                            </h3>
+                                        </div>
+                                        <div class="bg-black/20 p-4 rounded-2xl border border-white/10 mt-auto">
+                                            <p class="text-white/90 text-sm leading-relaxed">
+                                                {{ $mission->keterangan_misi }}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <span class="mobile-chevron text-white/60 text-xs ml-3 flex-shrink-0">▼</span>
                                 </div>
-                                {{-- Deskripsi: toggle --}}
-                                <div class="mobile-desc-wrap">
-                                    <p class="mobile-desc text-white/80 leading-relaxed text-xs pt-2 pb-1">Membangun kembali kepercayaan internal dan memperkuat citra organisasi melalui proses rebranding yang inklusif bagi seluruh angkatan.</p>
+
+                                <!-- ── DESKTOP VIEW (Bento Grid dengan Hover) ── -->
+                                <div class="hidden md:block {{ $colSpan }} group relative rounded-3xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-1 h-full min-h-[280px]">
+                                    
+                                    <div class="absolute inset-0 bg-gradient-to-br {{ $bgClass }} opacity-90 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                                    <!-- Desktop Konten Default -->
+                                    <div class="absolute inset-0 p-8 flex flex-col justify-between z-10 transition-all duration-500 group-hover:-translate-y-4 group-hover:opacity-0">
+                                        <span class="text-white/40 font-black text-4xl">{{ $formattedNumber }}</span>
+                                        <h3 class="text-2xl font-bold text-white leading-tight">
+                                            {{ $mission->nama_misi }}
+                                        </h3>
+                                    </div>
+
+                                    <!-- Desktop Konten Hover (Glassmorphism) -->
+                                    <div class="absolute inset-0 p-8 bg-black/70 backdrop-blur-md flex flex-col justify-center translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-20">
+                                        <div class="flex items-start gap-3 mb-4 shrink-0">
+                                            <span class="text-[#F5C400] font-black text-xl mt-1">{{ $formattedNumber }}.</span>
+                                            <!-- line-clamp dihapus agar judul panjang tidak kepotong -->
+                                            <h4 class="text-lg font-bold text-white leading-tight">{{ $mission->nama_misi }}</h4>
+                                        </div>
+                                        <!-- Area deskripsi bisa di-scroll jika isinya sangat panjang -->
+                                        <p class="text-white/90 text-base leading-relaxed overflow-y-auto custom-scrollbar pr-2">
+                                            {{ $mission->keterangan_misi }}
+                                        </p>
+                                    </div>
+
                                 </div>
-                            </div>
+                            @endforeach
+
                         </div>
-
-                        {{-- Mobile Card 2 --}}
-                        <div class="mobile-card scroll-anim fade-in-up anim-delay-200 rounded-xl border border-gray-100 cursor-pointer overflow-hidden w-full"
-                            style="background-image:url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=80'); background-size:cover; background-position:center top;"
-                            onclick="toggleMobileCard(this)">
-                            <div class="card-overlay-blur w-full px-4 pt-3 pb-3">
-                                <div class="flex items-center justify-between min-h-[48px]">
-                                    <div class="flex items-center gap-3 flex-1 min-w-0">
-                                        <span class="text-[9px] font-bold text-white/50 tracking-widest flex-shrink-0">02</span>
-                                        <h3 class="text-xs font-bold text-white leading-snug">Menjadi Jembatan Pengetahuan dan Informasi</h3>
-                                    </div>
-                                    <span class="mobile-chevron text-white/60 text-xs ml-3 flex-shrink-0">▼</span>
-                                </div>
-                                <div class="mobile-desc-wrap">
-                                    <p class="mobile-desc text-white/80 leading-relaxed text-xs pt-2 pb-1">Berperan sebagai fasilitator yang mengalirkan peluang karier, beasiswa, dan jejaring sosial-ekonomi demi memastikan tidak ada alumni yang merasa berjalan sendiri.</p>
-                                </div>
+                    @else
+                        <!-- (Kondisi kosong tetap sama) -->
+                        <div class="max-w-3xl mx-auto p-8 rounded-3xl border border-gray-200 bg-gray-50 flex flex-col items-center justify-center text-center">
+                            <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                </svg>
                             </div>
+                            <p class="text-gray-500 font-medium">Blok misi belum dikonfigurasi.</p>
                         </div>
-
-                        {{-- Mobile Card 3 --}}
-                        <div class="mobile-card scroll-anim fade-in-up anim-delay-300 rounded-xl border border-gray-100 cursor-pointer overflow-hidden w-full"
-                            style="background-image:url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&q=80'); background-size:cover; background-position:center;"
-                            onclick="toggleMobileCard(this)">
-                            <div class="card-overlay-blur w-full px-4 pt-3 pb-3">
-                                <div class="flex items-center justify-between min-h-[48px]">
-                                    <div class="flex items-center gap-3 flex-1 min-w-0">
-                                        <span class="text-[9px] font-bold text-white/50 tracking-widest flex-shrink-0">03</span>
-                                        <h3 class="text-xs font-bold text-white leading-snug">Penguatan Kapasitas Melalui Mentoring Lintas Generasi</h3>
-                                    </div>
-                                    <span class="mobile-chevron text-white/60 text-xs ml-3 flex-shrink-0">▼</span>
-                                </div>
-                                <div class="mobile-desc-wrap">
-                                    <p class="mobile-desc text-white/80 leading-relaxed text-xs pt-2 pb-1">Mengorganisir skema pendampingan sistematis di mana alumni senior membimbing alumni junior dalam bidang akademik, organisasi, dan pengembangan diri.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Mobile Card 4 --}}
-                        <div class="mobile-card scroll-anim fade-in-up anim-delay-100 rounded-xl border border-gray-100 cursor-pointer overflow-hidden w-full"
-                            style="background-image:url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=600&q=80'); background-size:cover; background-position:center;"
-                            onclick="toggleMobileCard(this)">
-                            <div class="card-overlay-blur w-full px-4 pt-3 pb-3">
-                                <div class="flex items-center justify-between min-h-[48px]">
-                                    <div class="flex items-center gap-3 flex-1 min-w-0">
-                                        <span class="text-[9px] font-bold text-white/50 tracking-widest flex-shrink-0">04</span>
-                                        <h3 class="text-xs font-bold text-white leading-snug">Pendampingan Transisi Fase Kehidupan</h3>
-                                    </div>
-                                    <span class="mobile-chevron text-white/60 text-xs ml-3 flex-shrink-0">▼</span>
-                                </div>
-                                <div class="mobile-desc-wrap">
-                                    <p class="mobile-desc text-white/80 leading-relaxed text-xs pt-2 pb-1">Memberikan panduan strategis bagi pelajar menuju dunia perkuliahan, serta mendukung alumni muda dalam transisi menuju dunia profesional dan kehidupan berkeluarga.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Mobile Card 5 --}}
-                        <div class="mobile-card scroll-anim fade-in-up anim-delay-200 rounded-xl border border-gray-100 cursor-pointer overflow-hidden w-full"
-                            style="background-image:url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80'); background-size:cover; background-position:center;"
-                            onclick="toggleMobileCard(this)">
-                            <div class="card-overlay-blur w-full px-4 pt-3 pb-3">
-                                <div class="flex items-center justify-between min-h-[48px]">
-                                    <div class="flex items-center gap-3 flex-1 min-w-0">
-                                        <span class="text-[9px] font-bold text-white/50 tracking-widest flex-shrink-0">05</span>
-                                        <h3 class="text-xs font-bold text-white leading-snug">Membangun Ekosistem Kolaborasi yang Mandiri</h3>
-                                    </div>
-                                    <span class="mobile-chevron text-white/60 text-xs ml-3 flex-shrink-0">▼</span>
-                                </div>
-                                <div class="mobile-desc-wrap">
-                                    <p class="mobile-desc text-white/80 leading-relaxed text-xs pt-2 pb-1">Menciptakan ruang bagi alumni untuk mengekspresikan karya dan memperkuat kemandirian finansial organisasi melalui jaringan kewirausahaan yang berkelanjutan.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Mobile Card 6 --}}
-                        <div class="mobile-card scroll-anim fade-in-up anim-delay-300 rounded-xl border border-gray-100 cursor-pointer overflow-hidden w-full"
-                            style="background-image:url('https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&q=80'); background-size:cover; background-position:center;"
-                            onclick="toggleMobileCard(this)">
-                            <div class="card-overlay-blur w-full px-4 pt-3 pb-3">
-                                <div class="flex items-center justify-between min-h-[48px]">
-                                    <div class="flex items-center gap-3 flex-1 min-w-0">
-                                        <span class="text-[9px] font-bold text-white/50 tracking-widest flex-shrink-0">06</span>
-                                        <h3 class="text-xs font-bold text-white leading-snug">Sinergi Strategis dengan Almamater</h3>
-                                    </div>
-                                    <span class="mobile-chevron text-white/60 text-xs ml-3 flex-shrink-0">▼</span>
-                                </div>
-                                <div class="mobile-desc-wrap">
-                                    <p class="mobile-desc text-white/80 leading-relaxed text-xs pt-2 pb-1">Menjaga keterhubungan organik dengan SMA IT Ihsanul Fikri sebagai perpanjangan tangan nilai-nilai sekolah di masyarakat luas.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>{{-- end mobile stack --}}
-
-                    {{-- ── DESKTOP: 2 Baris x 3 Accordion ── --}}
-                    <div class="hidden md:flex flex-col gap-3 w-full">
-
-                        {{-- Baris 1 --}}
-                        <div class="accordion-group flex flex-row gap-3 h-[220px] w-full">
-
-                            <div class="scroll-anim fade-in-up anim-delay-100 accordion-card flex-none rounded-xl border border-gray-100 cursor-pointer overflow-hidden"
-                                 style="background-image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'); background-size:cover; background-position:center;">
-                                <div class="card-overlay-blur h-full p-5 flex flex-col justify-between">
-                                    <div class="card-number text-[10px] font-bold text-white/60 tracking-widest">01</div>
-                                    <div>
-                                        <h3 class="card-title text-sm font-bold text-white mb-2 leading-snug">Merawat Silaturahmi dan Identitas Kolektif</h3>
-                                        <p class="card-desc text-white/80 leading-relaxed text-xs">Membangun kembali kepercayaan internal dan memperkuat citra organisasi melalui proses rebranding yang inklusif bagi seluruh angkatan.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="scroll-anim fade-in-up anim-delay-200 accordion-card flex-none rounded-xl border border-gray-100 cursor-pointer overflow-hidden"
-                                 style="background-image:url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=80'); background-size:cover; background-position:center top;">
-                                <div class="card-overlay-blur h-full p-5 flex flex-col justify-between">
-                                    <div class="card-number text-[10px] font-bold text-white/60 tracking-widest">02</div>
-                                    <div>
-                                        <h3 class="card-title text-sm font-bold text-white mb-2 leading-snug">Menjadi Jembatan Pengetahuan dan Informasi</h3>
-                                        <p class="card-desc text-white/80 leading-relaxed text-xs">Berperan sebagai fasilitator yang mengalirkan peluang karier, beasiswa, dan jejaring sosial-ekonomi demi memastikan tidak ada alumni yang merasa berjalan sendiri.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="scroll-anim fade-in-up anim-delay-300 accordion-card flex-none rounded-xl border border-gray-100 cursor-pointer overflow-hidden"
-                                 style="background-image:url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&q=80'); background-size:cover; background-position:center;">
-                                <div class="card-overlay-blur h-full p-5 flex flex-col justify-between">
-                                    <div class="card-number text-[10px] font-bold text-white/60 tracking-widest">03</div>
-                                    <div>
-                                        <h3 class="card-title text-sm font-bold text-white mb-2 leading-snug">Penguatan Kapasitas Melalui Mentoring Lintas Generasi</h3>
-                                        <p class="card-desc text-white/80 leading-relaxed text-xs">Mengorganisir skema pendampingan sistematis di mana alumni senior membimbing alumni junior dalam bidang akademik, organisasi, dan pengembangan diri.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Baris 2 --}}
-                        <div class="accordion-group flex flex-row gap-3 h-[220px] w-full">
-
-                            <div class="scroll-anim fade-in-up anim-delay-100 accordion-card flex-none rounded-xl border border-gray-100 cursor-pointer overflow-hidden"
-                                 style="background-image:url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=600&q=80'); background-size:cover; background-position:center;">
-                                <div class="card-overlay-blur h-full p-5 flex flex-col justify-between">
-                                    <div class="card-number text-[10px] font-bold text-white/60 tracking-widest">04</div>
-                                    <div>
-                                        <h3 class="card-title text-sm font-bold text-white mb-2 leading-snug">Pendampingan Transisi Fase Kehidupan</h3>
-                                        <p class="card-desc text-white/80 leading-relaxed text-xs">Memberikan panduan strategis bagi pelajar menuju dunia perkuliahan, serta mendukung alumni muda dalam transisi menuju dunia profesional dan kehidupan berkeluarga.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="scroll-anim fade-in-up anim-delay-200 accordion-card flex-none rounded-xl border border-gray-100 cursor-pointer overflow-hidden"
-                                 style="background-image:url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80'); background-size:cover; background-position:center;">
-                                <div class="card-overlay-blur h-full p-5 flex flex-col justify-between">
-                                    <div class="card-number text-[10px] font-bold text-white/60 tracking-widest">05</div>
-                                    <div>
-                                        <h3 class="card-title text-sm font-bold text-white mb-2 leading-snug">Membangun Ekosistem Kolaborasi yang Mandiri</h3>
-                                        <p class="card-desc text-white/80 leading-relaxed text-xs">Menciptakan ruang bagi alumni untuk mengekspresikan karya dan memperkuat kemandirian finansial organisasi melalui jaringan kewirausahaan yang berkelanjutan.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="scroll-anim fade-in-up anim-delay-300 accordion-card flex-none rounded-xl border border-gray-100 cursor-pointer overflow-hidden"
-                                 style="background-image:url('https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&q=80'); background-size:cover; background-position:center;">
-                                <div class="card-overlay-blur h-full p-5 flex flex-col justify-between">
-                                    <div class="card-number text-[10px] font-bold text-white/60 tracking-widest">06</div>
-                                    <div>
-                                        <h3 class="card-title text-sm font-bold text-white mb-2 leading-snug">Sinergi Strategis dengan Almamater</h3>
-                                        <p class="card-desc text-white/80 leading-relaxed text-xs">Menjaga keterhubungan organik dengan SMA IT Ihsanul Fikri sebagai perpanjangan tangan nilai-nilai sekolah di masyarakat luas.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>{{-- end desktop accordion --}}
-
+                    @endif
                 </div>{{-- end bagian misi --}}
+                
             </div>
 
         </div>{{-- end flex flex-col --}}
@@ -386,38 +283,56 @@
 
         /* ── Accordion — Desktop ── */
         @media (min-width: 768px) {
-            .accordion-card {
-                width: calc(33.333% - 8px);
-                border-left: 3px solid transparent;
-                transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+            .accordion-card, .accordion-spacer {
+                flex: 1 1 0%;
+                min-width: 0; /* Mencegah overflow teks */
+                transition: flex-grow 0.55s cubic-bezier(0.22, 1, 0.36, 1),
                             border-left-color 0.3s ease,
                             box-shadow 0.3s ease;
             }
-            .accordion-group:hover .accordion-card {
-                width: calc(18% - 6px);
+
+            .accordion-card {
+                border-left: 3px solid transparent;
             }
+
+            /* Saat grup di-hover, kartu yang di-hover langsung membesar pesat (flex-grow: 3.5) */
             .accordion-group .accordion-card:hover {
-                width: calc(64% - 8px) !important;
+                flex-grow: 3.5 !important;
                 border-left-color: #F5C400 !important;
-                box-shadow: 0 16px 48px -10px rgba(0,151,167,0.25);
+                box-shadow: 0 16px 48px -10px rgba(0, 151, 167, 0.25);
             }
-            .accordion-group:hover .card-desc {
+
+            /* Kartu lain & spacer secara otomatis akan menyusut proporsional (flex-grow: 1) */
+            .accordion-group:hover .accordion-card:not(:hover) {
+                flex-grow: 1;
+            }
+
+            .accordion-spacer {
+                pointer-events: none !important;
+            }
+
+            /* Sembunyikan deskripsi di kartu yang TIDAK di-hover saat ada interaksi di dalam group */
+            .accordion-group:has(.accordion-card:hover) .accordion-card:not(:hover) .card-desc {
                 opacity: 0;
                 transition: opacity 0.15s ease;
             }
+
             .accordion-group .accordion-card:hover .card-desc {
                 opacity: 1 !important;
                 transition: opacity 0.3s ease 0.2s;
             }
+
             .card-title {
                 overflow: hidden;
                 display: -webkit-box;
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 2;
             }
+
             .accordion-group .accordion-card:hover .card-title {
                 -webkit-line-clamp: unset;
             }
+
             .accordion-group .accordion-card:hover .card-number {
                 color: #F5C400;
                 transition: color 0.3s ease;

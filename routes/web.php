@@ -27,8 +27,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-// === KODE BARU START: Route untuk Input Event Admin ===
-// Route ini digunakan agar form input dan proses simpan JSON bisa berjalan
-Route::get('/admin/events/create', [EventController::class, 'create'])->name('events.create');
-Route::post('/admin/events', [EventController::class, 'store'])->name('events.store');
-// === KODE BARU END ===
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/admin/events/create', [EventController::class, 'create'])->name('events.create');
+    Route::post('/admin/events', [EventController::class, 'store'])->name('events.store');
+});
